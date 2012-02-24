@@ -1,0 +1,392 @@
+\begin{abstract}
+  We consdier the problem of learning to reconstruct polygonal models
+  from single and multiple views.
+
+  In this difficult domain we start small and focus on indoor
+  Manhattan models.
+
+  We learn lots about practical structured prediction in this unique
+  domain
+
+  We kick the state-of-the-art's butt on everything :)
+\end{abstract}
+
+\section{Introduction}
+\label{sec:introduction}
+
+Reconstruction long considered a central problem in computer vision
+
+Multiple view reconstruction long history, mostly uses probabilistic
+models with few free parameters
+
+Single view reconstruction a recent but now well-established
+trend. Learning obviously a core part of this fundamentally
+under-determined problem. But not much care on loss functions,
+optimality guarantees, or statistical consistency.
+-> Exceptions: Hedau et al (but very simple models)
+
+Structured prediction used for increasingly complex models. Its use in
+computer vision part of a long trend towards statistically rigorous
+and well-understood convex optimization techniques for solving
+empirical risk minimization problems in computer vision.
+
+Has been used much before for reconstruction. Stereo for example, and
+Hedau. Here we go all the way to an expressive high-level geometric
+model class. 
+
+Attraction of doing this is many fold:
+Can minimize model-level loss rather than pixel-level loss
+-> give a nice demonstration of this
+Can minimize realistic loss functions in a rigorous way
+Can learn in both single and multiple view setting using the *same*
+model
+Bayesian inference algorithm
+
+We learn much about the practice of structured prediction of value to
+the community and focus an entire section of conveying these lessons.
+
+Out approach: describe the hypothesis class, describe the model
+
+The remainder of this paper is...
+
+\section{Background}
+\label{sec:background}
+
+We're drawing together multiple view reconstruction, single view
+reconstruction, and structured prediction -> cannot give a reasonable
+survey, sorry!!
+
+Reconstruction papers
+
+Multi view reconstruction, stereo -> not much learning
+
+Single view -> learning but mostly at pixel level. Some exceptions
+
+Learning papers
+
+Structured prediction, reconstruction applications
+
+\section{Model}
+\label{sec:model}
+
+We now describe the indoor Manhattan model that we are attempting to
+learn. As with any learning problem, there are three ingredients that
+we need to specify: a hypothesis class, an observation model for
+hypotheses, and a loss function. In our setup these are, respectively,
+the class of indoor Manhattan models, a log--linear Bayesian
+likelihood, and either the relative depth error or a labelling error
+(we describe both).
+
+\subsection{Hypothesis Class}
+
+This paper is concerned with the hypothesis class consisting of indoor
+Manhattan reconstructions, which are 3D polygonal models characterized
+by infinite floor and ceiling planes with vertical walls extending
+between them \cite{Lee09,Flint10cvpr}. Indoor Manhattan environments
+are a sub--class of general Manhattan environments. Examples are shown
+in figure XXX.
+
+This is an attractive hypothesis class because
+\begin{enumerate}
+\item{it captures many \textit{regularities} within man--made
+  environments;}
+\item{the geometric primitives (floor/wall/ceiling) are immediately
+  useful for semantic--level scene understanding;}
+\item{it is expressive enough to represent approximately or exactly
+  a surprisingly wide variety of environments;}
+\item{there is a simple and convenient parametrisation;}
+\item{an efficient inference algorithm exists \cite{Flint10eccv}.}
+\end{enumerate}
+
+An indoor Manhattan model is much like an archicetural floor--plan,
+and can be specificied as a set of 2D line segments representing walls
+together with the position of the floor and ceiling plane (figure
+XXX). In this paper we adopt an image--domain parametrisation due to
+its convenience for inference and learning. Following Flint \etal
+\cite{Flint11} we represent hypotheses as a path running from the left
+edge to the right edge of the image, which we will refer to as a
+\textit{seam}. A seam $\Seam$ consists of a sequence of pairs of
+scalars,
+\begin{equation}
+  \Seam = \{\seam_i,\Label_i\}_{i=1}^{\Width}
+\end{equation}
+where $\seam_i$ is the $y$--cordinate at which the path intersects
+image column $i$, $\Orient_i$ is the orientation of the wall in that
+column, and $\Width$ is the image width. Remarkably, this simple
+parametrisation specifies a unique metric 3D model up to scale
+\cite{Flint11}.
+
+While we do not here have space for a full discussion of the geometry
+of indoor Manhattan models, there are two properties of the seam
+representation that will be of relevance to the following
+sections. Firstly, images of indoor Manhattan environments can be
+rectified so that vertical lines in the world project to vertical
+lines in the image \cite{Flint10eccv}. Secondly, indoor Manhattan
+models decompose in the following manner. We said earlier that a seam
+$\Seam$ specifies a unique 3D reconstruction. Let
+$\Orient(x,y;\Seam)\in\TheOrientations$ be the orientation of the 3D
+surface projecting to pixel $(x,y)$. Then Flint \etal
+\cite{Flint10eccv} showed that $\Orient$ is functionally dependant
+\textit{only} on the labels for column $x$. That is, we may write
+\begin{equation}
+  \label{eq:orient-indep}
+  \Orient(x,y;\Seam) = \tilde{\Orient}(x,y;\seam_x,\Label_x) ~.
+\end{equation}
+Similarly, letting $\Depth$ be the depth of the reconstruction at
+$(x,y)$ we may write $\Depth$ in terms of a single label pair,
+\cite{Flint10iccv}
+\begin{equation}
+  \label{eq:depth-indep}
+  \Depth(x,y;\Seam) = \tilde{\Depth}(x,y;\seam_x,\Label_x) ~.
+\end{equation}
+
+\subsection{Observation Model}
+
+We adopt the probabilistic model formulated by Flint \etal
+\cite{Flint11}, which relates indoor Manhattan hypotheses to
+single--view image features, multiple--view photoconsistency terms,
+and a reconstructed point cloud. From our perspective these are simply
+features and any subset may be omitted if in appropriate for a given
+application.
+
+TODO: walk through the graphical model?
+
+Under this model the prior on environments is a geometric distribution
+in the number of distinct wall segments, which means, roughly, that we
+consider reconstructions with more walls apriori less likely. The
+benefit of this prior is that its logarithm is linear in the number of
+wall segments,
+\begin{equation}
+  \log P(\Seam) = - \vect{n} \cdot \Penalties
+\end{equation}
+where $\vect{n}$ is a vector containing the number of walls in $\Seam$
+of various categories (concave, convex, occluding) and $\Penalties$ is
+a vector of hyper--parameters.
+
+Flint \etal showed that for a variety of single--view and
+multiple--view features $\Features$ there are reasonable choices of
+likelihood that can be written in the form
+\begin{equation}
+  \log P(\Features ~|~ \Seam) = \sum_{x=1}^\Width 
+  \PixelPayoff_{\Features}(x,\seam_x)
+\end{equation}
+where $\PixelPayoff_{\Features}$ is a 2--dimensional matrix computed
+deterministically from $\Features$ \cite{Flint11}. It is easy to show
+that for each likelihood in \cite{Flint11}, the log--likelihoods
+is linear in the hyper--parameters $\LikelihoodHypers$,
+\begin{equation}
+  \log P(\Features ~|~ \Seam) = 
+  \sum_{x=1}^\Width
+    \LikelihoodHypers_{\Features} 
+    \cdot
+    \PixelFtr_{\Features}(x,\seam_x)
+\end{equation}
+
+Assuming conditional independence between the feature types, we have
+for the posterior,
+\begin{eqnarray}
+  P(\Seam ~|~ \Features_1 \ldots \Features_n)
+  &\propto&
+  P(\Seam) P(\Feature_1 ~|~ \Seam) \ldots P(\Feature_n ~|~ \Seam)\\
+  \log P(\Seam ~|~ \Features_1 \ldots \Features_n)
+  &=&
+  - \vect{n} \cdot \Penalties
+  + \sum_{i=1}^n \sum_{x=1}^\Width 
+      \LikelihoodHypers_i
+      \cdot
+      \PixelFtr_i(x,\seam_x)
+  + O(1) ~.
+  \label{eq:log-posterior}
+\end{eqnarray}
+
+In order to place our model within a structured prediction framework
+we need to re--write the above in terms of a joint feature space
+$\JointFtr(\Seam,\Features)$. The decomposability of indoor Manhattan
+mdoels into payoff matrices permits precisely such a
+formulation. Defining
+\begin{align}
+  \JointFtr(\Seam,\Features) =
+  \begin{bmatrix}
+    -\vect{n} \\
+    \sum_{x=1}^\Width \PixelFtr_1(x,\seam_x) \\
+    \vdots \\
+    \sum_{x=1}^\Width \PixelFtr_n(x,\seam_x)
+  \end{bmatrix}
+  & \quad &
+  \Model =
+  \begin{bmatrix}
+    \Penalties \\
+    \LikelihoodHypers_1 \\
+    \vdots \\
+    \LikelihoodHypers_n
+  \end{bmatrix}
+  \label{eq:joint-ftr-def}
+\end{align}
+we see that \eqnref{log-posterior} can be written
+\begin{equation}
+  \log P(\Seam ~|~ \Features_1 \ldots \Features_n)
+  =
+  \bigl\langle \Model ~,~ \JointFtr(\Seam,\Features) \bigr\rangle + O(1)
+\end{equation}
+where we have adopted Hilbert space notation with
+$\langle\cdot,\cdot\rangle$ denoting an inner product. Since $\Model$
+contains all the free parameters in the model, the goal learning will
+be to optimise $\Model$ with respect to a set of training features
+$\{\Features_i\}$ together with ground truth labellings $\{\Seam_i\}$.
+
+\subsubsection{Features}
+
+The precise make--up of the feature space depends on the particular
+forms for the likelihoods and which sensor modalities are
+available. We define separate feature spaces for the single-- and
+multiple--view contexts; both are summarized in \figref{featurespace}.
+
+\begin{figure}[tb]
+  \centering
+  \begin{tabular}{@{}llll@{}}
+    \toprule
+    Feature & Dimensionality & Single--view? & Reference \\
+    \midrule
+    Line sweeps & 1 & yes & Lee \etal \cite{Lee09}\\
+    Stereo photo--consistency & 4 & no & Flint \etal \cite{Flint11}\\
+    Point cloud & 2 & no & Flint \etal \cite{Flint11}\\
+    \bottomrule
+  \end{tabular}
+  \caption{The composition of our feature space. Each row corresponds
+    to one or more of the $\PixelFtr_i$ in \eqnref{joint-ftr-def}.}
+  \label{fig:featurespace}
+\end{figure}
+
+\subsection{Loss Functions}
+
+A loss function $\Delta(\Seam,\EstSeam)$ is a measure of the
+deviation of a predicted label $\EstSeam$ from the ground truth
+$\Seam$. In the context of learning one often faces a trade--off
+between choosing a loss that leads to tractible optimization, and
+choosing a loss that measures what one ``really'' cares about. For
+example, Hoiem \etal \cite{Hoiem05} implicitly use a per--pixel loss,
+since this decomposes optimization pixel--wise. However, it would be
+hard to argue that pixel--wise accuracy is an honest measure of what
+the authors care about: some pixel--level errors are insignificant to
+the overall quality of a reconstruction, while others are
+catastrophic. Whether the authors care about the accuracy of their
+reconstruction in 3D, its utility for contextual object detection, or
+even the aesthetic appeal of reconstructions, a per--pixel loss is
+almost certainly a weak measure of success. 
+
+A more reasonable choice would be the relative depth error, which has
+been the gold standard within the reconstruction community for decades
+\cite{Hartley04}, and measures the average deviation between
+reconstructed and ground truth depths:
+\begin{equation}
+  \DepthLoss(\Seam,\EstSeam)
+  =
+  \frac{1}{N}
+  \sum_{\Pixel}
+    \frac
+        {\Depth(\Pixel;\Seam) - \Depth(\Pixel;\EstSeam)}
+        {\Depth(\Pixel;\Seam)} ~,
+\end{equation}
+where $N$ is the number of pixels. Another reasonable choice is the
+labelling error, used widely within the semantic segmentation
+literature,
+\begin{equation}
+  \LblLoss(\Seam,\EstSeam)
+  =
+  \frac{1}{N}
+  \sum_{\Pixel}
+    \bigl[~\Orient(\Pixel;\Seam) \neq \Orient(\Pixel;\EstSeam)~\bigr] ~,
+\end{equation}
+where $[p]$ is 1 if $p$ is true and 0 otherwise. An attractive
+characteristic of the indoor Manhattan class is that both of these
+loss functions can be optimized exactly. The algorithmic details for
+this are left to \sectref{learning}; the key result that we need to
+attend to here is that $\DepthLoss$ and $\LblLoss$ can be written in a
+form similar to the payoff formulation for the feature
+likelihoods. Recall the functional independence established in
+\eqnref{func-indep}.
+
+In the
+case of reconstruction, the gold standard is the relative depth error
+\cite{Hartley04}
+
+
+Should we show how to write these as payoff matrices here, or leave
+this to the learning section?
+
+L1, L2 error: easy representation, not meaningful, give examples
+
+Labelling error
+-> showing these will require some of the ICCV framework to have been presented
+-> give nice intuition, show scatter plots, examples
+
+Relative depth error
+-> showing these will require some of the ICCV framework to have been presented
+-> give nice intuition, show scatter plots, examples
+
+None of these are pixel classifiers!
+
+Writing loss functions in the seam representation -> maybe just
+mention that this will be useful later
+
+\section{Inference}
+\label{sec:inference}
+
+Describe the inference algorithm in terms of payoff/penalty
+optimization, cite ECCV -> this section must be short!
+
+\section{Learning}
+\label{sec:learning}
+
+Risk minimization formulation
+%  -> min_f E[ Loss(f(x),y*) ]
+Empirical risk problem
+%  -> min_f sum_{xi} Loss(f(x),y*)
+Write f as a linear argmax
+%  -> f(x) = argmax_y <w,psi(x,y)>
+Reduced to quadratic optimization (cite SVMstruct papers)
+%  -> min_f ...
+-> subject to ....
+Minimize using algorithm in ...
+This requires a separation oracle, which is the topic of the
+following subsection
+
+Loss-augmented inference
+-> the problem
+-> writing loss the functions as payoff matrices
+-> writing a payoff matrix for loss-augmented inference
+-> write a proof that ``the optimal model payoff matrix
+B=... solves the loss-augmented inference problem <w,psi> + L
+
+\section{Practical Considerations}
+\label{sec:practical-considerations}
+
+- negative slacks are more harmful than one would expect
+
+- inconsistent inference is very harmful
+
+- inference when the ground truth not in the hypothesis class
+
+- conditioning in a joint feature space
+
+\section{Multiple View Results}
+\label{sec:mv-results}
+
+\section{Single View Results}
+\label{sec:sv-results}
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+Wow, we really did rock didn't we?
+
+Hypothesis class, why it's interesting
+
+Statistical rigour is guuuud
+
+These fields are ready for this kind of unification
+
+Rigorous joint learning for contextual object detection: a challenge
+
+\bibliographystyle{splncs}
+\bibliography{AVLstrings,VisionRefs}
