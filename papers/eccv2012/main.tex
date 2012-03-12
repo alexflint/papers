@@ -721,7 +721,7 @@ practitioners.
 
 \subsubsection{Condition in the joint feature space, not the input
   feature space.}
-
+gi
 A common pre--processing operation for statistical learning is to
 transform the observed features $\Features$ to zero mean and unit
 variance. However, for structured prediction tasks it is the joint
@@ -754,7 +754,9 @@ $\xi'=\eta\xi$) to:
       \bigl\langle\Model', \JointFtr(\Features_k,\Seam_k)\bigr\rangle -
       \bigl\langle\Model', \JointFtr(\Features_k,\Seam)\bigr\rangle
       \geq
-      \frac{1}{\eta} \Loss(\Seam,\Seam_k) - \xi_k' ~.
+      %%% TODO: in the line below 1/eta should be replaced with eta --
+      %%% this was incorrect in the review submission!!
+      \eta \Loss(\Seam,\Seam_k) - \xi_k' ~.
   \end{split}
   \label{eq:equiv-problem}
 \end{equation}
