@@ -1,0 +1,95 @@
+\begin{thebibliography}{10}
+
+\bibitem{Coughlan99}
+Coughlan, J., Yuille, A.:
+\newblock Manhattan world: compass direction from a single image by bayesian
+  inference.
+\newblock In: Computer Vision, 1999. The Proceedings of the Seventh IEEE
+  International Conference on. Volume~2. (1999)  941--947 vol.2
+
+\bibitem{Zhang02}
+Koseck\`{a}, J., Zhang, W.:
+\newblock Video compass.
+\newblock In: Proc 7th European Conf on Computer Vision. Volume 2353 of Lecture
+  Notes in Computer Science., Springer (2002)  4: 476--490
+
+\bibitem{Furukawa09}
+Furukawa, Y., Curless, B., Seitz, S., Szeliski, R.:
+\newblock Manhattan-world stereo.
+\newblock Computer Vision and Pattern Recognition, IEEE Computer Society
+  Conference on \textbf{0} (2009)  1422--1429
+
+\bibitem{Lee09}
+Lee, D.C., Hebert, M., Kanade, T.:
+\newblock Geometric reasoning for single image structure recovery.
+\newblock In: IEEE Computer Society Conference on Computer Vision and Pattern
+  Recognition (CVPR). (2009)
+
+\bibitem{Flint10}
+Flint, A., Mei, C., Reid, I., Murray, D.:
+\newblock Growing semantically meaningful models for visual slam.
+\newblock In: Proc 28th {IEEE} Conf on Computer Vision and Pattern Recognition.
+  (2010)
+
+\bibitem{Huffman71}
+Huffman, D.A.:
+\newblock Impossible objects as nonsense sentences.
+\newblock Machine Intelligence \textbf{6} (1971)  295--323
+
+\bibitem{Waltz72}
+Waltz, D.L.:
+\newblock Generating semantic descriptions from drawings of scenes with
+  shadows.
+\newblock Technical report, Cambridge, MA, USA (1972)
+
+\bibitem{Sugihara82}
+Sugihara, K.:
+\newblock Mathematical structures of line drawings of polyhedrons-toward
+  man-machine communication by means of line drawings.
+\newblock Pattern Analysis and Machine Intelligence, IEEE Transactions on
+  \textbf{PAMI-4} (1982)  458 --469
+
+\bibitem{Kanade80}
+Kanade, T.:
+\newblock A theory of origami world.
+\newblock Artificial Intelligence \textbf{13} (1980)  279--311
+
+\bibitem{Hoiem05}
+Hoiem, D., Efros, A.A., H{\'{e}}bert, M.:
+\newblock Geometric context from a single image.
+\newblock In: Proc 10th {IEEE} Int Conf on Computer Vision. (2005)  654--661
+
+\bibitem{Saxena09}
+Saxena, A., Sun, M., Ng, A.Y.:
+\newblock Make3d: Learning 3d scene structure from a single still image.
+\newblock IEEE Transactions on Pattern Analysis and Machine Intelligence
+  \textbf{31} (2009)  824--840
+
+\bibitem{Hedau09}
+Hedau, V., Hoiem, D., Forsyth, D.:
+\newblock Recovering the spatial layout of cluttered rooms.
+\newblock In: Proc 12th {IEEE} Int Conf on Computer Vision. Volume~2. (2009)
+
+\bibitem{Criminisi01}
+Criminisi, A.:
+\newblock Accurate visual metrology from single and multiple uncalibrated
+  images.
+\newblock Springer-Verlag New York, Inc., New York, NY, USA (2001)
+
+\bibitem{Viola01}
+Viola, P.A., Jones, M.J.:
+\newblock Robust real-time object detection.
+\newblock International Journal of Computer Vision \textbf{57} (2004)  137--154
+
+\bibitem{Schrijver98}
+Schrijver, A.:
+\newblock Theory of Linear and Integer Programming.
+\newblock {John Wiley \& Sons} (1998)
+
+\bibitem{Kolmogorov02}
+Kolmogorov, V., Zabih, R.:
+\newblock What energy functions can be minimized via graph cuts?
+\newblock {IEEE} Transactions on Pattern Analysis and Machine Intelligence
+  (2002)
+
+\end{thebibliography}

@@ -1,0 +1,64 @@
+A key concern raised by all three reviewers is the apparently
+restrictive nature of the proposed indoor Manhattan models. It must
+therefore be stressed that our aim is to recover _coarse_,
+_high-level_ models in order to recover useful geometric cues that
+will assist further reasoning, rather than to recover intricately
+detailed 3D models. The indoor Manhattan model is
+useful in our context because (i) it represents a very good trade-off
+between capturing key geometric properties of a scene (such as the
+dominant surface orientations, height of floor and ceiling w.r.t
+camera, and the position of major room boundaries) while retaining
+a low-dimensional parameterization; (ii) the positions of room
+boundaries, which our model recovers explicitly, are more salient for
+purposes such as navigation, scene classification, or contextual
+priming of object detection, than the detailed geometry of room
+clutter.  We will further clarify these points in the final
+version.
+
+We note that the choice of indoor Manhattan models constitutes an
+effort to recover room boundaries _in spite_ of scene clutter, and
+indeed our system is able to achieve precisely this (see rows 1-7 of
+Fig 2 in supp. material).  We hope these figures explicitly
+answer the criticisms of R2 and R5, who questioned the robustness to
+clutter.
+
+We further note that previous single-view reconstruction attempts
+have (necesarily) encountered the same robustness/complexity
+trade-off, and most have indeed chosen to restrict the class of scene
+models. Lee [4] and Flint [5] employ exactly the same class of models
+as us, while Hedau et al. [12] choose the far more restricted class of
+simple cuboids. Hoiem et al. [10] also restrict surface orientations
+to three dominant directions; only Saxena et al. [11] allow more
+general models, though they do not evaluate their system on indoor 
+scenes.
+
+We regret overlooking the work of Barinova et al, and will
+rectify this in the final version.  Their work does not overlap with ours,
+nor is a comparison with their results appropriate given that
+they consider outdoor scenes only.  The work of Felzenszwalb noted by R3 is to
+appear at CVPR2010, and was therefore not avaialble at the time of our
+submission.  We have subsequently noted that their approach is quite
+different to ours.
+
+R2 questions the legitimacy of our evaluation framework.  While there
+are indeed issues with the choice of the pixelwise accuracy metric,
+this is what others have previously used (Hoiem [10], Lee [4], and
+Hedau [12]), and so we adopted it to allow direct comparisons
+with those approaches.
+
+We will re-work the layout of the final paper to include the optimal
+substructure proof, as requested by R2.
+
+R5 construes our approach as a "smoother" of the initial orientation
+estimate.  To clarify the relationship of our work to Lee et al: we
+employ their plane sweep heuristic to obtain noisy orientation
+estimates as depicted in the second column of Figs 3-6
+(supp. material), but our system does _not_ use the output of
+the branch-and-bound algorithm they employ; instead, our dynamic
+programming solution represents a much more efficient alternative to
+their algorithm and we _compare_ our results to theirs.
+
+Finally, R5 questions the method of ground truth acquisition: it was
+obtained by hand-labelling structure-from-motion maps (see
+lines 293-296). There may be small human- or structure-from-motion 
+errors, but we do not believe there is any systematic bias.

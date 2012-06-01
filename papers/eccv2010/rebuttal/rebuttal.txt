@@ -1,0 +1,17 @@
+We thank the reviewers for positive comments and constructive criticism.
+
+A key concern raised by the reviewers is the apparently restrictive nature of the indoor Manhattan model. We therefore stress that our proposed method recovers the dominant 3D structure of the environment while remaining robust to clutter. The gain in complexity compared to the state-of-the-art (Lee et al. [4]) is substantial, dropping from exponential to linear. Our approach also provides high-level geometric features, which are not simply pixel-wise orientations but meaningful large planar regions in the environment, encoding strong constraints for many tasks such as scene classification and contextual priming of object detection.
+
+Our choice of the indoor Manhattan model constitutes an effort to recover room boundaries _in spite_ of scene clutter, and indeed our system is able to achieve precisely this (see rows 1-7 of Fig 2 in supp. material). We hope these figures explicitly answer the criticisms of R2 and R5 regarding robustness to clutter.
+
+Previous attempts at single-view reconstruction have (necessarily) encountered the same robustness/complexity trade-off, and most have indeed chosen to restrict the class of scene models. [4] and [5] employ exactly the same class of models as us, while [12] choose the far more restricted class of simple cuboids. [10] also restrict surface orientations to three dominant directions; only [11] allow more general models, though they do not evaluate their system on indoor scenes.
+
+We regret overlooking the work of Barinova et al pointed out by R2, and will rectify this in the final version. We thank R3
+for highlighting the latest work by Felzenszwalb and Veksler that will appear at CVPR2010.
+
+R2 and R5 question our evaluation framework. While there are indeed issues with the pixel-wise accuracy metric, it was previously used by Hoiem et al. [10], Lee et al. [4], and Hedau et al. [12], and so we adopted it to allow direct comparisons with those approaches. To answer the question raised by R5 regarding the method of ground truth acquisition: we used hand-labelled structure-from-motion maps as ground truth (lines 293-296). There may be small human- or structure-from-motion errors, but we do not believe there is systematic bias. R3 noted that our framework "very convincingly shows superiority over Lee et al" and was impressed by our automated ground truth acquisition mechanism. 
+
+R2 noted that the optimal substructure proof was interesting and should be included in the main paper. We will include the proof as recommended.
+
+R5 construes our approach as a "smoother" of the initial orientation estimate. To clarify the relationship of our work to Lee et al: we employ their plane sweep heuristic to obtain noisy orientation estimates as depicted in the second column of Figs 3,4,5,6 (supp. material), but our system does _not_ use the output of the branch-and-bound algorithm they employ; instead, our dynamic programming solution represents a much more efficient alternative to their algorithm and we _compare_ our results to theirs.
+
